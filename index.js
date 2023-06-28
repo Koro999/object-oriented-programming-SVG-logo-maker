@@ -42,7 +42,7 @@ const questions = [
         name: "shapeColor",
         validate: (answer) => {
             if (validateColorAnswer(answer) == false) {
-                return "Please enter a valid basic color keyword or HEX value"
+                return "Please enter a valid basic color keyword or HEX value (https://www.w3.org/TR/css-color-3/#html4)"
             }
             return true
         }
@@ -108,9 +108,12 @@ const shapeCreate = (shape, color) => {
 function svgContent ({logoText, textColor, shape, shapeColor}) {
     const shapeSVG = shapeCreate(shape,shapeColor)
     //text to be added into the svg file
-    return `<svg version="1.1" width="300" height="200">
-${shapeSVG}
-<text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="${textColor}">${logoText}</text>\t`
+    return `<root>
+    <svg version="1.1" width="300" height="200" xmlns="http://www.w3.org/2000/svg">
+    ${shapeSVG}
+    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="${textColor}">${logoText}</text>
+    </svg>
+</root>\t`
 }
 //init function
 function init() {
