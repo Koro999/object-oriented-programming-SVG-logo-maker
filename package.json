@@ -1,0 +1,26 @@
+{
+  "name": "object-oriented-programming-svg-logo-maker",
+  "version": "1.0.0",
+  "description": "svg logo maker",
+  "main": "index.js",
+  "directories": {
+    "example": "examples",
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Koro999/object-oriented-programming-SVG-logo-maker.git"
+  },
+  "author": "Chris Dang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Koro999/object-oriented-programming-SVG-logo-maker/issues"
+  },
+  "homepage": "https://github.com/Koro999/object-oriented-programming-SVG-logo-maker#readme",
+  "dependencies": {
+    "inquirer": "^8.2.5"
+  }
+}
