@@ -1,7 +1,8 @@
 //import needed libraries 
+const shapes = require('./lib/shapes')
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 const inquirer = require('inquirer')
 const fs = require('fs')
-const shapes = require('./lib/shapes')
 //arrays holding basic color values, keywords and hex
 const colorKeywords= ['black', 'silver', 'gray', 'white', 'maroon', 'red', 'purple', 'fuchsia', 'green', 'lime', 'olive', 'yellow', 'navy', 'blue', 'teal', 'aqua']
 const colorHex = ['#000000', '#C0C0C0', '#808080', '#FFFFFF', '#800000', '#FF0000','#800080', '#FF00FF', '#008000', '#00FF00', '#808000', '#FFFF00', '#000080', '#0000FF', '#008080', '#00FFFF'  ]
@@ -24,7 +25,7 @@ const questions = [
         name: "textColor",
         validate: (answer) => {
             if (validateColorAnswer(answer) == false) {
-                return "Please enter a valid basic color keyword or HEX value"
+                return "Please enter a valid basic color keyword or HEX value (https://www.w3.org/TR/css-color-3/#html4)"
             }
             return true
         }
@@ -67,17 +68,19 @@ const validateColorAnswer = (answer) => {
             return false
         }
     })
-
+    //pass into filter function
     return filterColorValidation(colorKeywordCompare, colorHexCompare)
 }
 //filters these arrays to just one value for comparison
 const filterColorValidation = (keywordValidated, HexValidated) => {
+    //filter both arrays to a single true or empty array
     const filterKeyword = keywordValidated.filter(data => data === true)
     const filterHex = HexValidated.filter(data => data === true)
-
+    //if either array is reduced to a single true return true
     if (filterKeyword[0] === true || filterHex[0] === true){
         return true
     }
+    //otherwise return false
     else {
         return false
     }
@@ -85,38 +88,35 @@ const filterColorValidation = (keywordValidated, HexValidated) => {
 // function that calls on shapes.js to generate text 
 const shapeCreate = (shape, color) => {
     shapeLowerCase = shape.toLowerCase()
-    //compare user chosen shape and run corresponding library
-    //should return a string 
+    // switch statement, compare user chosen shape and run corresponding library
     switch(shapeLowerCase) {
         case "circle": {
-            const circle = shapes.Circle(color)           
-            return circle;
+            const circle = new shapes.Circle(color)           
+            return circle.renderSVG();
         }
         case "triangle": {
-            const triangle = shapes.Triangle(color)           
-            return triangle;
+            const triangle = new shapes.Triangle(color)           
+            return triangle.renderSVG();
         }
         case "square": {
-            const square = shapes.Square(color)
-           return square;
+            const square = new shapes.Square(color)
+            return square.renderSVG();
         }
     }
 }
-
-//content of the svg file
-function svgContent ({text, textColor, shape, shapeColor}) {
-    const shapeXML = shapeCreate(shape,shapeColor)
-
+//function returning the content of the svg file
+function svgContent ({logoText, textColor, shape, shapeColor}) {
+    const shapeSVG = shapeCreate(shape,shapeColor)
+    //text to be added into the svg file
     return `<svg version="1.1" width="300" height="200">
-    ${shapeXML}
-    <text x="150" y="100" fill=${textColor}>${text}</text>
-    \t`
+${shapeSVG}
+<text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="${textColor}">${logoText}</text>\t`
 }
 //init function
 function init() {
     //inquirer package
     inquirer.prompt(questions).then(response =>{
-        //fs.writeFilesync creates the file directory, with the specific content 
+        //fs.writeFilesync creates the file directory, with the specific content
         fs.writeFileSync("logo.svg", svgContent(response), (err) => 
         err ? console.error(err) : console.log('Generated logo.svg'))
     })
