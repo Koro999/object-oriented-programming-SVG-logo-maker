@@ -82,3 +82,44 @@ const filterColorValidation = (keywordValidated, HexValidated) => {
         return false
     }
 }
+// function that calls on shapes.js to generate text 
+const shapeCreate = (shape, color) => {
+    shapeLowerCase = shape.toLowerCase()
+    //compare user chosen shape and run corresponding library
+    //should return a string 
+    switch(shapeLowerCase) {
+        case "circle": {
+            const circle = shapes.Circle(color)           
+            return circle;
+        }
+        case "triangle": {
+            const triangle = shapes.Triangle(color)           
+            return triangle;
+        }
+        case "square": {
+            const square = shapes.Square(color)
+           return square;
+        }
+    }
+}
+
+//content of the svg file
+function svgContent ({text, textColor, shape, shapeColor}) {
+    const shapeXML = shapeCreate(shape,shapeColor)
+
+    return `<svg version="1.1" width="300" height="200">
+    ${shapeXML}
+    <text x="150" y="100" fill=${textColor}>${text}</text>
+    \t`
+}
+//init function
+function init() {
+    //inquirer package
+    inquirer.prompt(questions).then(response =>{
+        //fs.writeFilesync creates the file directory, with the specific content 
+        fs.writeFileSync("logo.svg", svgContent(response), (err) => 
+        err ? console.error(err) : console.log('Generated logo.svg'))
+    })
+}
+//call init 
+init();
